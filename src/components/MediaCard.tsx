@@ -9,8 +9,8 @@ export function MediaCard({
   width = "w-[160px] sm:w-[180px]",
 }: {
   item: Pick<Media, "id" | "type" | "title" | "poster"> & Partial<Media>;
-  rank?: number;
-  caption?: string;
+  rank?: number | undefined;
+  caption?: string | undefined;
   width?: string;
 }) {
   return (
