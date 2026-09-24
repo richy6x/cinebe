@@ -121,7 +121,11 @@
   overflow-x: auto;
   scroll-snap-type: x proximity;
   padding-bottom: 0.5rem;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   & > * {
     scroll-snap-align: start;
     flex: 0 0 auto;
