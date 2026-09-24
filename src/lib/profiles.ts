@@ -138,7 +138,7 @@ export function saveProgress(
   const h = hist.find((e) => e.id === id && e.type === type);
   if (h) {
     h.position = entry.position;
-    h.duration = entry.duration;
+    if (entry.duration) h.duration = entry.duration;
     localStorage.setItem(`cinebe.history.${profileId}`, JSON.stringify(hist));
   }
 }
