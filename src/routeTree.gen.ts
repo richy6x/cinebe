@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BrowseRouteImport } from './routes/browse'
+import { Route as ForYouRouteImport } from './routes/for-you'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as MyListRouteImport } from './routes/my-list'
 import { Route as SearchRouteImport } from './routes/search'
@@ -25,6 +26,11 @@ const IndexRoute = IndexRouteImport.update({
 const BrowseRoute = BrowseRouteImport.update({
   id: '/browse',
   path: '/browse',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForYouRoute = ForYouRouteImport.update({
+  id: '/for-you',
+  path: '/for-you',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistoryRoute = HistoryRouteImport.update({
@@ -56,6 +62,7 @@ const WatchTypeIdRoute = WatchTypeIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/browse': typeof BrowseRoute
+  '/for-you': typeof ForYouRoute
   '/history': typeof HistoryRoute
   '/my-list': typeof MyListRoute
   '/search': typeof SearchRoute
@@ -65,6 +72,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/browse': typeof BrowseRoute
+  '/for-you': typeof ForYouRoute
   '/history': typeof HistoryRoute
   '/my-list': typeof MyListRoute
   '/search': typeof SearchRoute
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/browse': typeof BrowseRoute
+  '/for-you': typeof ForYouRoute
   '/history': typeof HistoryRoute
   '/my-list': typeof MyListRoute
   '/search': typeof SearchRoute
@@ -86,6 +95,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/browse'
+    | '/for-you'
     | '/history'
     | '/my-list'
     | '/search'
@@ -95,6 +105,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/browse'
+    | '/for-you'
     | '/history'
     | '/my-list'
     | '/search'
@@ -104,6 +115,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/browse'
+    | '/for-you'
     | '/history'
     | '/my-list'
     | '/search'
@@ -114,6 +126,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BrowseRoute: typeof BrowseRoute
+  ForYouRoute: typeof ForYouRoute
   HistoryRoute: typeof HistoryRoute
   MyListRoute: typeof MyListRoute
   SearchRoute: typeof SearchRoute
@@ -135,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/browse'
       fullPath: '/browse'
       preLoaderRoute: typeof BrowseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/for-you': {
+      id: '/for-you'
+      path: '/for-you'
+      fullPath: '/for-you'
+      preLoaderRoute: typeof ForYouRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/history': {
@@ -178,6 +198,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BrowseRoute: BrowseRoute,
+  ForYouRoute: ForYouRoute,
   HistoryRoute: HistoryRoute,
   MyListRoute: MyListRoute,
   SearchRoute: SearchRoute,
