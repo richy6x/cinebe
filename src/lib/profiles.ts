@@ -12,6 +12,8 @@ export type WatchEntry = {
   poster: string | null;
   season?: number;
   episode?: number;
+  position?: number;
+  duration?: number;
   updatedAt: number;
 };
 
@@ -89,11 +91,24 @@ export function getContinue(profileId: string): WatchEntry[] {
 
 export function recordWatch(profileId: string, entry: Omit<WatchEntry, "updatedAt">) {
   if (!isBrowser()) return;
-  const existing = getContinue(profileId).filter(
+  const all = getContinue(profileId);
+  const prev = all.find((e) => e.id === entry.id && e.type === entry.type);
+  const sameEp = prev && prev.season === entry.season && prev.episode === entry.episode;
+  const existing = all.filter((e) => !(e.id === entry.id && e.type === entry.type));
+  const merged: WatchEntry = {
+    ...entry,
+    ...(sameEp && prev?.position ? { position: prev.position, duration: prev.duration } : {}),
+    updatedAt: Date.now(),
+  };
+  const next = [merged, ...existing].slice(0, 20);
+  localStorage.setItem(`cinebe.watch.${profileId}`, JSON.stringify(next));
+  const hist = getHistory(profileId).filter(
     (e) => !(e.id === entry.id && e.type === entry.type),
   );
-  const next = [{ ...entry, updatedAt: Date.now() }, ...existing].slice(0, 20);
-  localStorage.setItem(`cinebe.watch.${profileId}`, JSON.stringify(next));
+  localStorage.setItem(
+    `cinebe.history.${profileId}`,
+    JSON.stringify([merged, ...hist].slice(0, 200)),
+  );
   window.dispatchEvent(new Event("cinebe:watch"));
 }
 
@@ -102,6 +117,59 @@ export function removeWatch(profileId: string, id: number, type: "movie" | "tv")
   const next = getContinue(profileId).filter((e) => !(e.id === id && e.type === type));
   localStorage.setItem(`cinebe.watch.${profileId}`, JSON.stringify(next));
   window.dispatchEvent(new Event("cinebe:watch"));
+}
+
+export function saveProgress(
+  profileId: string,
+  id: number,
+  type: "movie" | "tv",
+  position: number,
+  duration: number,
+) {
+  if (!isBrowser()) return;
+  const list = getContinue(profileId);
+  const entry = list.find((e) => e.id === id && e.type === type);
+  if (!entry) return;
+  entry.position = Math.floor(position);
+  if (duration > 0) entry.duration = Math.floor(duration);
+  entry.updatedAt = Date.now();
+  localStorage.setItem(`cinebe.watch.${profileId}`, JSON.stringify(list));
+  const hist = getHistory(profileId);
+  const h = hist.find((e) => e.id === id && e.type === type);
+  if (h) {
+    h.position = entry.position;
+    h.duration = entry.duration;
+    localStorage.setItem(`cinebe.history.${profileId}`, JSON.stringify(hist));
+  }
+}
+
+export function getResume(profileId: string, id: number, type: "movie" | "tv") {
+  return getContinue(profileId).find((e) => e.id === id && e.type === type);
+}
+
+/* ---- per-profile viewing history ---- */
+
+export function getHistory(profileId: string): WatchEntry[] {
+  if (!isBrowser()) return [];
+  try {
+    const raw = JSON.parse(localStorage.getItem(`cinebe.history.${profileId}`) || "[]");
+    return (raw as WatchEntry[]).sort((a, b) => b.updatedAt - a.updatedAt);
+  } catch {
+    return [];
+  }
+}
+
+export function removeHistory(profileId: string, id: number, type: "movie" | "tv") {
+  if (!isBrowser()) return;
+  const next = getHistory(profileId).filter((e) => !(e.id === id && e.type === type));
+  localStorage.setItem(`cinebe.history.${profileId}`, JSON.stringify(next));
+  window.dispatchEvent(new Event("cinebe:history"));
+}
+
+export function clearHistory(profileId: string) {
+  if (!isBrowser()) return;
+  localStorage.removeItem(`cinebe.history.${profileId}`);
+  window.dispatchEvent(new Event("cinebe:history"));
 }
 
 /* ---- per-profile my list ---- */
