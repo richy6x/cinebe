@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { getSeason, getTitle } from "@/lib/tmdb.functions";
 import { PROVIDERS } from "@/lib/providers";
 import { useProfile } from "@/components/ProfileProvider";
-import { recordWatch } from "@/lib/profiles";
+import { getResume, recordWatch, saveProgress } from "@/lib/profiles";
 
 const titleQuery = (type: "movie" | "tv", id: number) =>
   queryOptions({ queryKey: ["title", type, id], queryFn: () => getTitle({ data: { type, id } }) });
@@ -59,6 +59,26 @@ function WatchPage() {
   const [providerId, setProviderId] = useState(PROVIDERS[0]!.id);
   const [season, setSeason] = useState(seasons[0]?.season_number ?? 1);
   const [episode, setEpisode] = useState(1);
+  const [startAt, setStartAt] = useState(0);
+  const [ready, setReady] = useState(false);
+
+  // Restore saved position/episode on first load
+  useEffect(() => {
+    if (!profile) {
+      setReady(true);
+      return;
+    }
+    const saved = getResume(profile.id, media.id, media.type);
+    if (saved) {
+      if (type === "tv" && saved.season) {
+        setSeason(saved.season);
+        setEpisode(saved.episode ?? 1);
+      }
+      if (saved.position) setStartAt(saved.position);
+    }
+    setReady(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.id, media.id]);
 
   const seasonFn = useServerFn(getSeason);
   const { data: episodes } = useQuery({
@@ -68,7 +88,7 @@ function WatchPage() {
   });
 
   useEffect(() => {
-    if (!profile) return;
+    if (!profile || !ready) return;
     recordWatch(profile.id, {
       id: media.id,
       type: media.type,
@@ -76,10 +96,39 @@ function WatchPage() {
       poster: media.poster,
       ...(type === "tv" ? { season, episode } : {}),
     });
-  }, [profile, media.id, media.type, media.title, media.poster, type, season, episode]);
+  }, [profile, ready, media.id, media.type, media.title, media.poster, type, season, episode]);
+
+  // Listen for progress events from the player
+  useEffect(() => {
+    if (!profile) return;
+    let last = 0;
+    const onMsg = (ev: MessageEvent) => {
+      let msg: unknown = ev.data;
+      if (typeof msg === "string") {
+        try {
+          msg = JSON.parse(msg);
+        } catch {
+          return;
+        }
+      }
+      if (!msg || typeof msg !== "object") return;
+      const m = msg as Record<string, unknown>;
+      const d = (m["data"] && typeof m["data"] === "object" ? m["data"] : m) as Record<string, unknown>;
+      const t = Number(d["currentTime"] ?? d["time"] ?? d["position"]);
+      const dur = Number(d["duration"] ?? 0);
+      if (!Number.isFinite(t) || t <= 0) return;
+      const now = Date.now();
+      if (now - last < 4000 && d["event"] !== "pause" && d["event"] !== "ended") return;
+      last = now;
+      saveProgress(profile.id, media.id, media.type, t, Number.isFinite(dur) ? dur : 0);
+    };
+    window.addEventListener("message", onMsg);
+    return () => window.removeEventListener("message", onMsg);
+  }, [profile, media.id, media.type]);
 
   const provider = PROVIDERS.find((p) => p.id === providerId) ?? PROVIDERS[0]!;
-  const src = type === "tv" ? provider.tv(id, season, episode) : provider.movie(id);
+  const src =
+    type === "tv" ? provider.tv(id, season, episode, startAt) : provider.movie(id, startAt);
 
   return (
     <div className="mx-auto max-w-[1600px] px-5 py-6 pb-24">
