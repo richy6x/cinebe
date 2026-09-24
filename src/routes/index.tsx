@@ -50,15 +50,36 @@ function Home() {
       {continueList.length > 0 && (
         <Row title="Continue watching">
           {continueList.map((e) => (
-            <MediaCard
+            <Link
               key={`${e.type}-${e.id}`}
-              item={{ id: e.id, type: e.type, title: e.title, poster: e.poster }}
-              caption={
-                e.type === "tv" && e.season
-                  ? `S${e.season} · E${e.episode} · Continue watching`
-                  : "Continue watching"
-              }
-            />
+              to="/watch/$type/$id"
+              params={{ type: e.type, id: String(e.id) }}
+              className="group relative w-[260px] shrink-0"
+            >
+              <div className="relative aspect-video overflow-hidden rounded-lg border border-border/60 bg-surface">
+                {e.poster && (
+                  <img src={e.poster} alt={e.title} loading="lazy" className="size-full object-cover object-top opacity-80 transition-transform duration-500 group-hover:scale-105" />
+                )}
+                <div className="absolute inset-0 flex items-center justify-center bg-background/30 opacity-0 transition-opacity group-hover:opacity-100">
+                  <span className="accent-gradient flex size-12 items-center justify-center rounded-full">
+                    <Play className="size-5 fill-primary-foreground text-primary-foreground" />
+                  </span>
+                </div>
+                <div className="absolute inset-x-0 bottom-0 h-1 bg-muted/70">
+                  <div
+                    className="accent-gradient h-full"
+                    style={{
+                      width: `${e.position && e.duration ? Math.min(100, (e.position / e.duration) * 100) : 3}%`,
+                    }}
+                  />
+                </div>
+              </div>
+              <p className="mt-2 truncate text-sm font-medium">{e.title}</p>
+              <p className="truncate text-xs text-muted-foreground">
+                {e.type === "tv" && e.season ? `S${e.season} · E${e.episode} · ` : ""}
+                {e.position ? `Resume from ${Math.floor(e.position / 60)}m` : "Continue watching"}
+              </p>
+            </Link>
           ))}
         </Row>
       )}

@@ -41,6 +41,13 @@ export function Header() {
           >
             My list
           </Link>
+          <Link
+            to="/history"
+            activeProps={{ className: "text-foreground" }}
+            className="transition-colors hover:text-foreground"
+          >
+            History
+          </Link>
         </nav>
 
         <form
