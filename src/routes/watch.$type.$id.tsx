@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { getSeason, getTitle } from "@/lib/tmdb.functions";
 import { PROVIDERS } from "@/lib/providers";
 import { useProfile } from "@/components/ProfileProvider";
-import { recordWatch } from "@/lib/profiles";
+import { getResume, recordWatch, saveProgress } from "@/lib/profiles";
 
 const titleQuery = (type: "movie" | "tv", id: number) =>
   queryOptions({ queryKey: ["title", type, id], queryFn: () => getTitle({ data: { type, id } }) });
@@ -113,12 +113,12 @@ function WatchPage() {
       }
       if (!msg || typeof msg !== "object") return;
       const m = msg as Record<string, unknown>;
-      const d = (m.data && typeof m.data === "object" ? m.data : m) as Record<string, unknown>;
-      const t = Number(d.currentTime ?? d.time ?? d.position);
-      const dur = Number(d.duration ?? 0);
+      const d = (m["data"] && typeof m["data"] === "object" ? m["data"] : m) as Record<string, unknown>;
+      const t = Number(d["currentTime"] ?? d["time"] ?? d["position"]);
+      const dur = Number(d["duration"] ?? 0);
       if (!Number.isFinite(t) || t <= 0) return;
       const now = Date.now();
-      if (now - last < 4000 && d.event !== "pause" && d.event !== "ended") return;
+      if (now - last < 4000 && d["event"] !== "pause" && d["event"] !== "ended") return;
       last = now;
       saveProgress(profile.id, media.id, media.type, t, Number.isFinite(dur) ? dur : 0);
     };
