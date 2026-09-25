@@ -136,6 +136,10 @@ function ProfileGate({
   onClose: () => void;
 }) {
   const [adding, setAdding] = useState(profiles.length === 0);
+  const hasProfiles = profiles.length > 0;
+  useEffect(() => {
+    if (hasProfiles) setAdding(false);
+  }, [hasProfiles]);
   const [name, setName] = useState("");
   const [color, setColor] = useState(AVATAR_COLORS[0]!);
   const [kids, setKids] = useState(false);
