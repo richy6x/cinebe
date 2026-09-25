@@ -32,5 +32,7 @@ export function applySnapshot(data: Record<string, string>) {
   Object.entries(data).forEach(([k, v]) => {
     if (k.startsWith("cinebe.") && !LOCAL_ONLY.has(k)) localStorage.setItem(k, v);
   });
-  window.dispatchEvent(new Event("cinebe:synced"));
+  ["cinebe:synced", "cinebe:watch", "cinebe:list", "cinebe:history"].forEach((e) =>
+    window.dispatchEvent(new Event(e)),
+  );
 }
