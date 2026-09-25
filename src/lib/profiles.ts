@@ -43,6 +43,7 @@ export function loadProfiles(): Profile[] {
 export function saveProfiles(profiles: Profile[]) {
   if (!isBrowser()) return;
   localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+  window.dispatchEvent(new Event("cinebe:profiles"));
 }
 
 export function getActiveProfileId(): string | null {
