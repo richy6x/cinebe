@@ -2,6 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { Play, Search } from "lucide-react";
 import { useState } from "react";
 import { useProfile } from "@/components/ProfileProvider";
+import { Avatar } from "@/components/Avatar";
 
 export function Header() {
   const [query, setQuery] = useState("");
@@ -15,7 +16,7 @@ export function Header() {
           <span className="accent-gradient flex size-8 items-center justify-center rounded-full">
             <Play className="size-4 fill-primary-foreground text-primary-foreground" />
           </span>
-          <span className="text-lg font-semibold tracking-tight">CINEBE</span>
+          <span className="font-display text-xl font-extrabold tracking-tight">CINE<span className="accent-text">BE</span></span>
         </Link>
 
         <nav className="hidden items-center gap-5 text-sm text-muted-foreground md:flex">
@@ -79,13 +80,8 @@ export function Header() {
           onClick={switchProfile}
           className="flex items-center gap-2 rounded-full border border-border bg-surface/70 py-1 pl-1 pr-3 text-sm transition-colors hover:border-primary/60"
         >
-          <span
-            className="flex size-7 items-center justify-center rounded-full text-xs font-semibold text-primary-foreground"
-            style={{ background: profile?.color ?? "var(--primary)" }}
-          >
-            {profile?.name.slice(0, 1).toUpperCase() ?? "?"}
-          </span>
-          <span className="hidden sm:inline">{profile?.name ?? "Profile"}</span>
+          <Avatar profile={profile} className="size-7 rounded-md text-sm" />
+          <span className="hidden sm:inline">{profile?.username ? `@${profile.username}` : (profile?.name ?? "Profile")}</span>
         </button>
       </div>
     </header>
