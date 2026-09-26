@@ -69,8 +69,14 @@ export function setActiveProfileId(id: string | null) {
   window.dispatchEvent(new Event("cinebe:profile"));
 }
 
-export function createProfile(name: string, color: string, kids: boolean): Profile {
+export function createProfile(
+  name: string,
+  color: string,
+  kids: boolean,
+  extra: Partial<Profile> = {},
+): Profile {
   const profile: Profile = {
+    ...extra,
     id: Math.random().toString(36).slice(2, 10),
     name,
     color,
