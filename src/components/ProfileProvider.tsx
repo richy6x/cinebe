@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { Pencil, Plus, Trash2 } from "lucide-react";\nimport { Avatar } from "@/components/Avatar";
+import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Avatar } from "@/components/Avatar";
 import { createVault, pullVault, pushVault } from "@/lib/sync.functions";
 import {
   applySnapshot,
