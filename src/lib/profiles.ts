@@ -3,7 +3,18 @@ export type Profile = {
   name: string;
   color: string;
   kids: boolean;
+  /** emoji preset or data: URL of an uploaded picture */
+  avatar?: string;
+  username?: string;
+  tagline?: string;
+  autoplay?: boolean;
 };
+
+export const AVATAR_EMOJIS = ["🍿", "🎬", "👾", "🦊", "🐼", "🐸", "🦁", "🐙", "🚀", "👻", "🎧", "🌵", "🐱", "🦖", "🤖", "⚡"];
+
+export function updateProfile(id: string, patch: Partial<Profile>) {
+  saveProfiles(loadProfiles().map((p) => (p.id === id ? { ...p, ...patch } : p)));
+}
 
 export type WatchEntry = {
   id: number;
