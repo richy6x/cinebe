@@ -3,7 +3,18 @@ export type Profile = {
   name: string;
   color: string;
   kids: boolean;
+  /** emoji preset or data: URL of an uploaded picture */
+  avatar?: string;
+  username?: string;
+  tagline?: string;
+  autoplay?: boolean;
 };
+
+export const AVATAR_EMOJIS = ["🍿", "🎬", "👾", "🦊", "🐼", "🐸", "🦁", "🐙", "🚀", "👻", "🎧", "🌵", "🐱", "🦖", "🤖", "⚡"];
+
+export function updateProfile(id: string, patch: Partial<Profile>) {
+  saveProfiles(loadProfiles().map((p) => (p.id === id ? { ...p, ...patch } : p)));
+}
 
 export type WatchEntry = {
   id: number;
@@ -58,8 +69,14 @@ export function setActiveProfileId(id: string | null) {
   window.dispatchEvent(new Event("cinebe:profile"));
 }
 
-export function createProfile(name: string, color: string, kids: boolean): Profile {
+export function createProfile(
+  name: string,
+  color: string,
+  kids: boolean,
+  extra: Partial<Profile> = {},
+): Profile {
   const profile: Profile = {
+    ...extra,
     id: Math.random().toString(36).slice(2, 10),
     name,
     color,
