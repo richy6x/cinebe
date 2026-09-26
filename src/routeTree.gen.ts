@@ -10,11 +10,15 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as BrowseRouteImport } from './routes/browse'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ForYouRouteImport } from './routes/for-you'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as MyListRouteImport } from './routes/my-list'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TitleTypeIdRouteImport } from './routes/title.$type.$id'
 import { Route as WatchTypeIdRouteImport } from './routes/watch.$type.$id'
 
@@ -23,9 +27,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BrowseRoute = BrowseRouteImport.update({
   id: '/browse',
   path: '/browse',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForYouRoute = ForYouRouteImport.update({
@@ -43,9 +57,19 @@ const MyListRoute = MyListRouteImport.update({
   path: '/my-list',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TitleTypeIdRoute = TitleTypeIdRouteImport.update({
@@ -61,32 +85,44 @@ const WatchTypeIdRoute = WatchTypeIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/browse': typeof BrowseRoute
+  '/faq': typeof FaqRoute
   '/for-you': typeof ForYouRoute
   '/history': typeof HistoryRoute
   '/my-list': typeof MyListRoute
+  '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
+  '/terms': typeof TermsRoute
   '/title/$type/$id': typeof TitleTypeIdRoute
   '/watch/$type/$id': typeof WatchTypeIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/browse': typeof BrowseRoute
+  '/faq': typeof FaqRoute
   '/for-you': typeof ForYouRoute
   '/history': typeof HistoryRoute
   '/my-list': typeof MyListRoute
+  '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
+  '/terms': typeof TermsRoute
   '/title/$type/$id': typeof TitleTypeIdRoute
   '/watch/$type/$id': typeof WatchTypeIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/browse': typeof BrowseRoute
+  '/faq': typeof FaqRoute
   '/for-you': typeof ForYouRoute
   '/history': typeof HistoryRoute
   '/my-list': typeof MyListRoute
+  '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
+  '/terms': typeof TermsRoute
   '/title/$type/$id': typeof TitleTypeIdRoute
   '/watch/$type/$id': typeof WatchTypeIdRoute
 }
@@ -94,42 +130,58 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/browse'
+    | '/faq'
     | '/for-you'
     | '/history'
     | '/my-list'
+    | '/privacy'
     | '/search'
+    | '/terms'
     | '/title/$type/$id'
     | '/watch/$type/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/browse'
+    | '/faq'
     | '/for-you'
     | '/history'
     | '/my-list'
+    | '/privacy'
     | '/search'
+    | '/terms'
     | '/title/$type/$id'
     | '/watch/$type/$id'
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/browse'
+    | '/faq'
     | '/for-you'
     | '/history'
     | '/my-list'
+    | '/privacy'
     | '/search'
+    | '/terms'
     | '/title/$type/$id'
     | '/watch/$type/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   BrowseRoute: typeof BrowseRoute
+  FaqRoute: typeof FaqRoute
   ForYouRoute: typeof ForYouRoute
   HistoryRoute: typeof HistoryRoute
   MyListRoute: typeof MyListRoute
+  PrivacyRoute: typeof PrivacyRoute
   SearchRoute: typeof SearchRoute
+  TermsRoute: typeof TermsRoute
   TitleTypeIdRoute: typeof TitleTypeIdRoute
   WatchTypeIdRoute: typeof WatchTypeIdRoute
 }
@@ -143,11 +195,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/browse': {
       id: '/browse'
       path: '/browse'
       fullPath: '/browse'
       preLoaderRoute: typeof BrowseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/for-you': {
@@ -171,11 +237,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MyListRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/search': {
       id: '/search'
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/title/$type/$id': {
@@ -197,11 +277,15 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   BrowseRoute: BrowseRoute,
+  FaqRoute: FaqRoute,
   ForYouRoute: ForYouRoute,
   HistoryRoute: HistoryRoute,
   MyListRoute: MyListRoute,
+  PrivacyRoute: PrivacyRoute,
   SearchRoute: SearchRoute,
+  TermsRoute: TermsRoute,
   TitleTypeIdRoute: TitleTypeIdRoute,
   WatchTypeIdRoute: WatchTypeIdRoute,
 }
